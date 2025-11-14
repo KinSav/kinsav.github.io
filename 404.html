@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting...</title>
+  <script>
+    const path = window.location.pathname;
+    const correctPath = "/KinSav/";
+
+    // Redirect any lowercase /kinsav/ or variations to /KinSav/
+    if (path.toLowerCase().startsWith("/kinsav") && path !== correctPath) {
+      window.location.href = correctPath;
+    }
+  </script>
+</head>
+<body>
+  <p>If you are not redirected automatically, <a href="/KinSav/">click here to go to KinSav</a>.</p>
+</body>
+</html>
