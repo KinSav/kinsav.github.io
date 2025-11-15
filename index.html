@@ -31,7 +31,7 @@
       min-height: 100vh;
     }
     body {
-      padding-bottom: 85px;
+      padding-bottom: 85px; /* room for copyright bar */
     }
     header {
       text-align: center;
@@ -194,55 +194,46 @@
     .queued-item {
       font-family: 'Cinzel', serif;
       color: #faf6ec;
-      font-size: 0.77em;
-      margin: 0 0 0.19em 0;
-      padding: 0.17em 0.22em;
+      font-size: 1em;
+      margin: 0 0 0.33em 0;
+      padding: 0.33em 0.48em;
       background: #2d1530c0;
-      border-radius: 6px;
-      box-shadow: 0 1px 6px #a31b4444;
+      border-radius: 7px;
+      box-shadow: 0 1px 7px #a31b4444;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 0.11em;
-      border-left: 2px solid var(--highlight);
+      gap: 0.3em;
+      border-left: 3px solid var(--highlight);
       transition: background 0.12s;
-      min-height: 1em;
     }
     .queued-item.current {
       color: var(--primary);
       background: #3d233ecc;
-      border-left: 2px solid var(--primary);
+      border-left: 3px solid var(--primary);
       font-weight: bold;
       text-shadow: 0 0 4px var(--neon-red);
     }
     .play-btn, .remove-btn {
-      padding: 0.01em 0.25em;
+      padding: 0.02em 0.41em;
       border: none;
-      font-size: 1em;
+      font-size: 0.92em;
       font-family: 'UnifrakturCook', 'Cinzel', serif, 'Montserrat', Arial;
-      border-radius: 0.29em;
-      background: #1c0106;
-      color: #db7aff;
+      border-radius: 0.36em;
+      background: #0b051a;
+      color: var(--neon-pink);
       cursor: pointer;
       transition: background 0.11s, color 0.11s;
-      margin-left: 0.1em;
-      margin-right: 0.03em;
-      width: 1.85em;
-      height: 1.85em;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      margin-left: 0.24em;
+      margin-right: 0.01em;
+    }
+    .queued-item.current .play-btn {
+      color: var(--neon-red);
+      text-shadow: 0 0 4px var(--neon-red);
     }
     .queued-item .remove-btn {
       color: #e84c4c;
       background: #1c0106;
-    }
-    .queued-item .play-btn {
-      font-size: 1.12em;
-      background: #1c0106;
-      color: #db7aff;
-      line-height: 1;
-      padding: 0;
     }
     .queue-controls {
       margin-bottom: 0.55em;
@@ -283,23 +274,78 @@
       outline: 1.3px solid var(--secondary);
       display: block;
     }
-    video::-webkit-media-controls-fullscreen-button { display: inherit !important; }
-    video:-webkit-full-screen { width: 100vw !important; height: 100vh !important; }
+    /* Fullscreen support for mobile and desktop */
+    video::-webkit-media-controls-fullscreen-button {
+      display: inherit !important;
+    }
+    video:-webkit-full-screen {
+      width: 100vw !important;
+      height: 100vh !important;
+    }
     .video-card video:fullscreen,
-    .video-card video:-webkit-full-screen { width: 98vw !important; height: 95vh !important; max-width: 100vw !important; }
+    .video-card video:-webkit-full-screen {
+      width: 98vw !important;
+      height: 95vh !important;
+      max-width: 100vw !important;
+    }
     @media (max-width: 1100px) {
-      .content-wrap { flex-direction: column; align-items: center; gap: 0.5em; max-width: 99vw; }
-      .queue-section { position: static; max-width: 96vw; width: 97vw; margin-top: 1em; order: 2; min-width: unset; }
-      .gallery { order: 1; max-width: 98vw; }
+      .content-wrap {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5em;
+        max-width: 99vw;
+      }
+      .queue-section {
+        position: static;
+        max-width: 96vw;
+        width: 97vw;
+        margin-top: 1em;
+        order: 2;
+        min-width: unset;
+      }
+      .gallery {
+        order: 1;
+        max-width: 98vw;
+      }
     }
     @media (max-width: 700px) {
-      .content-wrap { flex-direction: column; align-items: center; gap: 0.18em; width: 100vw; max-width: 100vw; }
-      .queue-section { margin-top: 0.8em; min-width: unset; width: 98vw; box-sizing: border-box; padding: 0.62em 0.2em 1em 0.2em; }
-      .gallery { padding: 0.7em 0.05em 2em 0.05em; gap: 0.9em; max-width: 100vw; }
-      .row-gallery { flex-direction: column; align-items: center; gap: 0.9em; width: 100vw; }
-      .video-card { max-width: 98vw; min-width: unset; padding: 0.8em 0.02em 1em 0.02em; }
-      video { max-width: 96vw; min-width: 80px; }
+      .content-wrap {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.18em;
+        width: 100vw;
+        max-width: 100vw;
+      }
+      .queue-section {
+        margin-top: 0.8em;
+        min-width: unset;
+        width: 98vw;
+        box-sizing: border-box;
+        padding: 0.62em 0.2em 1em 0.2em;
+      }
+      .gallery {
+        padding: 0.7em 0.05em 2em 0.05em;
+        gap: 0.9em;
+        max-width: 100vw;
+      }
+      .row-gallery {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.9em;
+        width: 100vw;
+      }
+      .video-card {
+        max-width: 98vw;
+        min-width: unset;
+        padding: 0.8em 0.02em 1em 0.02em;
+      }
+      video {
+        max-width: 96vw;
+        min-width: 80px;
+      }
     }
+
+    /* --- Copyright goth-glow bar at bottom --- */
     .footer-glow-area {
       position: fixed;
       left: 0; right: 0; bottom: 0;
@@ -307,7 +353,7 @@
       z-index: 99;
       height: 58px;
       pointer-events: none;
-      background: transparent;
+      background: transparent; /* Remove the exterior glow */
       display: flex;
       align-items: flex-end;
       justify-content: center;
@@ -387,7 +433,6 @@
       <div class="queue-title">Song Queue</div>
       <div class="queue-controls">
         <button onclick="playQueue()">Play Queue</button>
-        <button onclick="skipQueue()">Skip</button>
         <button onclick="clearQueue()">Clear Queue</button>
       </div>
       <ul class="queued-list" id="queued-list">
@@ -401,14 +446,17 @@
     </span>
   </div>
   <script>
+    // All songs on the page in order
     const allSongs = [
       { title: "Toreador 🥀", src: "Toreador 🥀.mp4" },
       { title: "Daughter of Janus", src: "Daughter of Janus.mp4" },
       { title: "Malkavian", src: "Malkavian.mp4" },
       { title: "Nosferatu", src: "Nosferatu.mp4" }
     ];
+
     let queue = [];
     let currentQueueIndex = -1;
+
     function addToQueue(btn) {
       const card = btn.closest('.video-card');
       const title = card.getAttribute('data-title');
@@ -419,6 +467,7 @@
       btn.classList.add('active');
       btn.textContent = 'Queued!';
     }
+
     function removeFromQueue(idx) {
       const removed = queue.splice(idx, 1)[0];
       updateQueueDisplay();
@@ -429,9 +478,13 @@
           btn.textContent = 'Add to Queue';
         }
       });
-      if (currentQueueIndex === idx) stopQueue();
-      else if (currentQueueIndex > idx) currentQueueIndex--;
+      if (currentQueueIndex === idx) {
+        stopQueue();
+      } else if (currentQueueIndex > idx) {
+        currentQueueIndex--;
+      }
     }
+
     function clearQueue() {
       queue = [];
       currentQueueIndex = -1;
@@ -442,6 +495,7 @@
       });
       stopQueue();
     }
+
     function updateQueueDisplay() {
       const list = document.getElementById('queued-list');
       list.innerHTML = '';
@@ -451,38 +505,14 @@
         li.innerHTML = `
           <span>${song.title}</span>
           <span>
-            <button class="play-btn" onclick="playFromQueue(${i})" title="Play">🎸</button>
+            <button class="play-btn" onclick="playFromQueue(${i})" title="Play">&#9654;</button>
             <button class="remove-btn" onclick="removeFromQueue(${i})" title="Remove">&#10005;</button>
           </span>
         `;
         list.appendChild(li);
       });
     }
-    function playQueue() {
-      if (queue.length === 0) return;
-      playFromQueue(0);
-    }
-    function skipQueue() {
-      if (queue.length === 0) return;
-      if (currentQueueIndex === -1) {
-        playFromQueue(0);
-      } else if (currentQueueIndex < queue.length - 1) {
-        playFromQueue(currentQueueIndex + 1);
-      } else {
-        playFromQueue(0);
-      }
-    }
-    function attachEndedListener(video) {
-      video.onended = null;
-      video.addEventListener('ended', function handler() {
-        if (queue.length === 0) return;
-        if (currentQueueIndex < queue.length - 1) {
-          playFromQueue(currentQueueIndex + 1);
-        } else {
-          playFromQueue(0);
-        }
-      }, { once: true });
-    }
+
     function playFromQueue(idx) {
       if (queue.length === 0) return;
       currentQueueIndex = idx;
@@ -496,22 +526,41 @@
         document.querySelectorAll('video').forEach(v => {
           v.pause();
           v.currentTime = 0;
-          v.onended = null;
         });
-        attachEndedListener(video);
         video.play();
         videoCard.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     }
+
+    function playQueue() {
+      if (queue.length === 0) return;
+      playFromQueue(0);
+    }
+
+    document.querySelectorAll('.video-card video').forEach((vid) => {
+      vid.addEventListener('ended', function() {
+        if(currentQueueIndex !== -1 && !vid.loop) {
+          if (currentQueueIndex < queue.length - 1) {
+            playFromQueue(currentQueueIndex + 1);
+          } else {
+            currentQueueIndex = -1;
+            updateQueueDisplay();
+          }
+        }
+      });
+    });
+
     function stopQueue() {
       currentQueueIndex = -1;
       updateQueueDisplay();
     }
+
     window.addEventListener("resize", updateQueueDisplay);
+
     function toggleLoop(btn) {
       const video = btn.parentElement.parentElement.querySelector("video");
       video.loop = !video.loop;
-      if (video.loop) {
+      if(video.loop) {
         btn.classList.add("active");
         btn.textContent = "Loop: On";
       } else {
@@ -519,15 +568,19 @@
         btn.textContent = "Loop: Off";
       }
     }
+
     document.querySelectorAll('.video-card video').forEach((vid) => {
       vid.addEventListener('play', function() {
         const src = vid.currentSrc.split('/').pop();
         if(currentQueueIndex !== -1) {
           const cur = queue[currentQueueIndex];
-          if(!vid.loop && (!cur || cur.src !== src)) stopQueue();
+          if(!vid.loop && (!cur || cur.src !== src)) {
+            stopQueue();
+          }
         }
       });
     });
+
     document.querySelectorAll("video").forEach((vid) => {
       if (!vid.hasAttribute("allowfullscreen")) vid.setAttribute("allowfullscreen", "allowfullscreen");
       vid.addEventListener('dblclick', function() {
@@ -537,6 +590,7 @@
         else if (vid.msRequestFullscreen) vid.msRequestFullscreen();
       });
     });
+
     updateQueueDisplay();
   </script>
 </body>
