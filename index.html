@@ -50,6 +50,15 @@
       gap: 2em;
       justify-content: center;
       padding: 2em 1em 3em 1em;
+      flex-direction: column;
+      align-items: center;
+    }
+    .row-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2em;
+      justify-content: center;
+      width: 100%;
     }
     .video-card {
       background: var(--card-bg);
@@ -94,6 +103,11 @@
         align-items: center;
         padding: 1em 0.1em 3em 0.1em;
       }
+      .row-gallery {
+        flex-direction: column;
+        align-items: center;
+        gap: 2em;
+      }
       .bloodlines-title {
         font-size: 2em;
       }
@@ -122,20 +136,22 @@
   </header>
   <section class="gallery">
     <div class="video-card">
-      <div class="video-title">Daughter of Janus</div>
-      <video controls src="Daughter of Janus.mp4"></video>
-    </div>
-    <div class="video-card">
-      <div class="video-title">Malkavian</div>
-      <video controls src="Malkavian.mp4"></video>
-    </div>
-    <div class="video-card">
-      <div class="video-title">Nosferatu</div>
-      <video controls src="Nosferatu.mp4"></video>
-    </div>
-    <div class="video-card">
       <div class="video-title">Toreador <span aria-label="rose" title="rose">🥀</span></div>
       <video controls src="Toreador 🥀.mp4"></video>
+    </div>
+    <div class="row-gallery">
+      <div class="video-card">
+        <div class="video-title">Daughter of Janus</div>
+        <video controls src="Daughter of Janus.mp4"></video>
+      </div>
+      <div class="video-card">
+        <div class="video-title">Malkavian</div>
+        <video controls src="Malkavian.mp4"></video>
+      </div>
+      <div class="video-card">
+        <div class="video-title">Nosferatu</div>
+        <video controls src="Nosferatu.mp4"></video>
+      </div>
     </div>
   </section>
   <footer>
