@@ -30,6 +30,9 @@
       font-family: 'Montserrat', Arial, Helvetica, sans-serif;
       min-height: 100vh;
     }
+    body {
+      padding-bottom: 85px; /* room for copyright bar */
+    }
     header {
       text-align: center;
       padding: 2em 1em 1em 1em;
@@ -43,10 +46,16 @@
     }
     .subtitle {
       font-size: 1.1em;
-      color: #aaa;
-      margin-top: 0.4em;
-      font-weight: 500;
+      font-family: 'UnifrakturCook', 'Cinzel', serif, 'Montserrat', Arial;
+      color: #db7aff;
+      font-weight: 700;
       letter-spacing: 0.04em;
+      text-shadow:
+        0 0 4px #db7aff,
+        0 0 14px #db7aff,
+        0 1.2px 12px #db7aff,
+        0 0 5px #fff2;
+      margin-top: 0.4em;
     }
     .content-wrap {
       display: flex;
@@ -335,14 +344,46 @@
         min-width: 80px;
       }
     }
-    footer {
+
+    /* --- Copyright goth-glow bar at bottom --- */
+    .footer-glow-area {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      width: 100vw;
+      z-index: 99;
+      height: 58px;
+      pointer-events: none;
+      background: transparent; /* Remove the exterior glow */
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .footer-glow-copyright {
+      position: absolute;
+      left: 50%; bottom: 10px;
+      transform: translateX(-50%);
+      font-family: 'UnifrakturCook', serif;
+      font-size: 0.84em;
+      color: #fff7;
+      padding: 3px 1.25em 2.5px 1.25em;
+      letter-spacing: 0.07em;
+      border-radius: 10px;
+      background: rgba(30,13,36,0.18);
+      box-shadow: 0 0 10px 2px #db7aff55;
+      text-shadow:
+        0 0 4px #db7aff,
+        0 2px 7px #db7aff99;
+      font-weight: 700;
+      pointer-events: none;
+      user-select: none;
+      box-sizing: border-box;
       text-align: center;
-      color: #45344d;
-      padding: 1.5em 0 1em 0;
-      font-size: .98em;
-      border-top: 1px solid #232;
-      margin-top: 2em;
-      letter-spacing: 0.03em;
+      transition: font-size 0.2s;
+    }
+    @media (max-width: 700px){
+      .footer-glow-area { height: 32px; }
+      .footer-glow-copyright { font-size: 0.62em; padding: 3px 0.7em 2.5px 0.7em; bottom: 2px;}
+      body { padding-bottom: 42px; }
     }
   </style>
 </head>
@@ -397,12 +438,13 @@
       <ul class="queued-list" id="queued-list">
         <!-- Queue items inserted here -->
       </ul>
-      <div id="empty-queue-msg" style="color:#b48bb5;font-family:'Montserrat';font-size:.98em;">Queue is empty.<br>Add some tracks!</div>
     </aside>
   </div>
-  <footer>
-    &copy; 2025 KinSav
-  </footer>
+  <div class="footer-glow-area">
+    <span class="footer-glow-copyright">
+      &copy; 2025 KinSav
+    </span>
+  </div>
   <script>
     // All songs on the page in order
     const allSongs = [
@@ -413,20 +455,15 @@
     ];
 
     let queue = [];
-    let currentQueueIndex = -1; // -1 means not playing from queue
+    let currentQueueIndex = -1;
 
     function addToQueue(btn) {
       const card = btn.closest('.video-card');
       const title = card.getAttribute('data-title');
       const src = card.getAttribute('data-src');
-
-      // Prevent duplicates
       if (queue.findIndex(q => q.src === src) !== -1) return;
-
       queue.push({ title, src });
       updateQueueDisplay();
-
-      // Mark as active
       btn.classList.add('active');
       btn.textContent = 'Queued!';
     }
@@ -434,7 +471,6 @@
     function removeFromQueue(idx) {
       const removed = queue.splice(idx, 1)[0];
       updateQueueDisplay();
-      // Unmark in gallery
       document.querySelectorAll('.video-card').forEach(card => {
         if (card.getAttribute('data-src') === removed.src) {
           let btn = card.querySelector('.queue-btn');
@@ -442,11 +478,10 @@
           btn.textContent = 'Add to Queue';
         }
       });
-      // If removed song is current, stop queueing or move to next
       if (currentQueueIndex === idx) {
         stopQueue();
       } else if (currentQueueIndex > idx) {
-        currentQueueIndex--; // Shift index left
+        currentQueueIndex--;
       }
     }
 
@@ -454,7 +489,6 @@
       queue = [];
       currentQueueIndex = -1;
       updateQueueDisplay();
-      // Unmark all
       document.querySelectorAll('.queue-btn').forEach(btn => {
         btn.classList.remove('active');
         btn.textContent = 'Add to Queue';
@@ -477,28 +511,23 @@
         `;
         list.appendChild(li);
       });
-      document.getElementById('empty-queue-msg').style.display = queue.length === 0 ? 'block' : 'none';
     }
 
     function playFromQueue(idx) {
       if (queue.length === 0) return;
       currentQueueIndex = idx;
       updateQueueDisplay();
-
-      // Find in gallery and play
       const song = queue[idx];
       let videoCard = Array.from(document.querySelectorAll('.video-card')).find(
         c => c.getAttribute('data-src') === song.src
       );
       if (videoCard) {
         let video = videoCard.querySelector('video');
-        // Pause all video tags on the page first
         document.querySelectorAll('video').forEach(v => {
           v.pause();
           v.currentTime = 0;
         });
         video.play();
-        // Scroll into view smoothly
         videoCard.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     }
@@ -508,14 +537,12 @@
       playFromQueue(0);
     }
 
-    // Whenever a video ends and is part of queue, go to next
     document.querySelectorAll('.video-card video').forEach((vid) => {
       vid.addEventListener('ended', function() {
         if(currentQueueIndex !== -1 && !vid.loop) {
           if (currentQueueIndex < queue.length - 1) {
             playFromQueue(currentQueueIndex + 1);
           } else {
-            // End of queue
             currentQueueIndex = -1;
             updateQueueDisplay();
           }
@@ -528,10 +555,8 @@
       updateQueueDisplay();
     }
 
-    // Maintain scroll/queue state on resize
     window.addEventListener("resize", updateQueueDisplay);
 
-    // LOOP BUTTONS as before
     function toggleLoop(btn) {
       const video = btn.parentElement.parentElement.querySelector("video");
       video.loop = !video.loop;
@@ -544,7 +569,6 @@
       }
     }
 
-    // When user plays video manually, clear from queue state if not current in queue
     document.querySelectorAll('.video-card video').forEach((vid) => {
       vid.addEventListener('play', function() {
         const src = vid.currentSrc.split('/').pop();
@@ -557,10 +581,8 @@
       });
     });
 
-    // Setup: Enable fullscreen button for browsers (Some require allowfullscreen attribute on <video>)
     document.querySelectorAll("video").forEach((vid) => {
       if (!vid.hasAttribute("allowfullscreen")) vid.setAttribute("allowfullscreen", "allowfullscreen");
-      // Add double-click to fullscreen
       vid.addEventListener('dblclick', function() {
         if (vid.requestFullscreen) vid.requestFullscreen();
         else if (vid.webkitRequestFullscreen) vid.webkitRequestFullscreen();
@@ -569,7 +591,6 @@
       });
     });
 
-    // Page initial state
     updateQueueDisplay();
   </script>
 </body>
