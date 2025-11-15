@@ -217,7 +217,7 @@
     .play-btn, .remove-btn {
       padding: 0.02em 0.41em;
       border: none;
-      font-size: 0.92em;
+      font-size: 1em;
       font-family: 'UnifrakturCook', 'Cinzel', serif, 'Montserrat', Arial;
       border-radius: 0.36em;
       background: #0b051a;
@@ -446,7 +446,6 @@
     </span>
   </div>
   <script>
-    // All songs on the page in order
     const allSongs = [
       { title: "Toreador 🥀", src: "Toreador 🥀.mp4" },
       { title: "Daughter of Janus", src: "Daughter of Janus.mp4" },
@@ -456,6 +455,9 @@
 
     let queue = [];
     let currentQueueIndex = -1;
+
+    // When queue is playing, always use this reference to the currently playing video element
+    let currentQueueVideo = null;
 
     function addToQueue(btn) {
       const card = btn.closest('.video-card');
@@ -502,10 +504,11 @@
       queue.forEach((song, i) => {
         const li = document.createElement('li');
         li.className = 'queued-item' + (i === currentQueueIndex ? ' current' : '');
+        // Play button now uses the guitar
         li.innerHTML = `
           <span>${song.title}</span>
           <span>
-            <button class="play-btn" onclick="playFromQueue(${i})" title="Play">&#9654;</button>
+            <button class="play-btn" onclick="playFromQueue(${i})" title="Play">🎸</button>
             <button class="remove-btn" onclick="removeFromQueue(${i})" title="Remove">&#10005;</button>
           </span>
         `;
@@ -513,20 +516,41 @@
       });
     }
 
+    // More robust: only one queue video is playing, everything else (gallery, etc) is independent
     function playFromQueue(idx) {
       if (queue.length === 0) return;
+
+      // Pause all videos and remove previous ended events
+      document.querySelectorAll('.video-card video').forEach(v => {
+        v.pause();
+        v.currentTime = 0;
+        v.onended = null;
+      });
+
       currentQueueIndex = idx;
       updateQueueDisplay();
       const song = queue[idx];
-      let videoCard = Array.from(document.querySelectorAll('.video-card')).find(
+      const videoCard = Array.from(document.querySelectorAll('.video-card')).find(
         c => c.getAttribute('data-src') === song.src
       );
       if (videoCard) {
-        let video = videoCard.querySelector('video');
-        document.querySelectorAll('video').forEach(v => {
-          v.pause();
-          v.currentTime = 0;
-        });
+        const video = videoCard.querySelector('video');
+        currentQueueVideo = video;
+        // Remove prior ended event from ALL videos first
+        document.querySelectorAll('.video-card video').forEach(v => v.onended = null);
+
+        // Add new ended event only to the currently playing video
+        video.onended = function() {
+          if (queue.length === 0) return;
+          // Loop to top if on last, else go next
+          if (currentQueueIndex < queue.length - 1) {
+            playFromQueue(currentQueueIndex + 1);
+          } else {
+            playFromQueue(0);
+          }
+        };
+
+        video.loop = false; // Don't infinite-loop in queue play
         video.play();
         videoCard.scrollIntoView({ behavior: "smooth", block: "center" });
       }
@@ -537,20 +561,12 @@
       playFromQueue(0);
     }
 
-    document.querySelectorAll('.video-card video').forEach((vid) => {
-      vid.addEventListener('ended', function() {
-        if(currentQueueIndex !== -1 && !vid.loop) {
-          if (currentQueueIndex < queue.length - 1) {
-            playFromQueue(currentQueueIndex + 1);
-          } else {
-            currentQueueIndex = -1;
-            updateQueueDisplay();
-          }
-        }
-      });
-    });
-
     function stopQueue() {
+      // Pause every video and clear onended event
+      document.querySelectorAll('.video-card video').forEach(v => {
+        v.pause();
+        v.onended = null;
+      });
       currentQueueIndex = -1;
       updateQueueDisplay();
     }
@@ -569,6 +585,7 @@
       }
     }
 
+    // Pause queue when user plays a video directly in gallery (for separation)
     document.querySelectorAll('.video-card video').forEach((vid) => {
       vid.addEventListener('play', function() {
         const src = vid.currentSrc.split('/').pop();
@@ -581,6 +598,7 @@
       });
     });
 
+    // Fullscreen on double click
     document.querySelectorAll("video").forEach((vid) => {
       if (!vid.hasAttribute("allowfullscreen")) vid.setAttribute("allowfullscreen", "allowfullscreen");
       vid.addEventListener('dblclick', function() {
