@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <title>Bloodlines</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Google Fonts for a Gothic look -->
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Google Fonts for a Gothic look and for the queue/buttons -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="https://img.icons8.com/color/64/000000/vampire.png">
   <style>
     :root {
@@ -17,6 +17,10 @@
       --text: #F8F8FF;
       --highlight: #A31B44;
       --shadow: 0 8px 30px #000a;
+      --neon-red: #C3073F;
+      --neon-pink: #db7aff;
+      --queue-bg: #201325f0;
+      --queue-accent: #57092c;
     }
     html, body {
       margin: 0;
@@ -44,12 +48,24 @@
       font-weight: 500;
       letter-spacing: 0.04em;
     }
+    .content-wrap {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 3em;
+      margin: 0 auto;
+      max-width: 1280px;
+      width: 100%;
+    }
     .gallery {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 2em;
       padding: 2em 1em 3em 1em;
+      flex: 1 1 500px;
+      min-width: 0;
     }
     .row-gallery {
       display: flex;
@@ -87,50 +103,188 @@
       letter-spacing: 0.04em;
       text-align: center;
     }
-    .loop-btn {
-      margin-top: 0.4em;
-      padding: 0.32em 1.1em;
+    .btn-row {
+      display: flex;
+      gap: 0.65em;
+      margin-top: 0.5em;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .queue-btn, .loop-btn {
       border: none;
-      border-radius: 8px;
-      background: #2a1f36;
-      color: #db7aff;
-      font-size: 1em;
+      border-radius: 7px;
       cursor: pointer;
-      transition: background 0.18s, color 0.18s, box-shadow 0.2s;
+      background: #1a1420;
+      color: var(--neon-pink);
+      font-family: 'UnifrakturCook', 'Cinzel', serif, 'Montserrat', Arial;
+      font-size: 0.92em;
+      letter-spacing: 0.02em;
+      margin-top: 0.15em;
+      font-weight: 700;
+      padding: 0.14em 1em 0.14em 1em;
+      transition: 
+        box-shadow 0.15s,
+        background 0.18s, 
+        color 0.18s,
+        outline 0.18s;
+      outline: 1.3px solid var(--highlight);
+      text-shadow: 0 1px 6px #8e44ad7a, 0 2px 8px #0008;
       box-shadow: 0 0 0 #0000;
-      font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+      margin-right: 0.1em;
+    }
+    .queue-btn.active {
+      color: var(--neon-red);
+      background: #401220;
+      box-shadow: 0 0 12px var(--neon-red), 0 0 2px #fff1;
+      text-shadow: 0 0 10px var(--neon-red), 0 1.5px 6px #fff4;
+      outline: 1.4px solid var(--neon-red);
+    }
+    .loop-btn {
+      font-size: 0.84em;
+      margin-left: 0.1em;
     }
     .loop-btn.active {
-      color: #28e222;
-      background: #5b2544;
-      box-shadow: 0 0 12px #44ff4477;
+      color: var(--neon-red);
+      background: #3a0c16;
+      box-shadow: 0 0 13px var(--neon-red), 0 0 3px #fff1;
+      text-shadow: 0 0 9px var(--neon-red), 0 1px 7px #fff2;
+      outline: 1.5px solid var(--neon-red);
+    }
+    .queue-section {
+      background: var(--queue-bg);
+      border: 2px solid var(--queue-accent);
+      border-radius: 24px;
+      margin-top: 2.3em;
+      box-shadow: 0 0 30px #9e145555, 0 2px 14px #14041277;
+      padding: 1.4em 1.1em 2em 1.1em;
+      max-width: 326px;
+      min-width: 210px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: sticky;
+      top: 1.7em;
+      z-index: 10;
+    }
+    .queue-title {
+      font-family: 'UnifrakturCook', 'Cinzel', serif, 'Montserrat', Arial;
+      font-size: 1.55em;
+      color: var(--neon-red);
+      margin-bottom: 0.8em;
+      text-shadow: 0 1.5px 11px #C3073Fbb, 0 2px 8px #0009;
+    }
+    ul.queued-list {
+      width: 97%;
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1.1em 0;
+    }
+    .queued-item {
+      font-family: 'Cinzel', serif;
+      color: #faf6ec;
+      font-size: 1.05em;
+      margin: 0 0 0.5em 0;
+      padding: 0.44em 0.63em;
+      background: #2d1530c0;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px #a31b4444;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5em;
+      border-left: 4px solid var(--highlight);
+      transition: background 0.18s;
+    }
+    .queued-item.current {
+      color: var(--primary);
+      background: #3d233ecc;
+      border-left: 4px solid var(--primary);
       font-weight: bold;
+      text-shadow: 0 0 8px var(--neon-red);
     }
-    .loop-btn:active {
-      box-shadow: none;
+    .play-btn, .remove-btn {
+      padding: 0.05em 0.55em;
+      border: none;
+      font-size: 0.96em;
+      font-family: 'UnifrakturCook', 'Cinzel', serif, 'Montserrat', Arial;
+      border-radius: 0.38em;
+      background: #0b051a;
+      color: var(--neon-pink);
+      cursor: pointer;
+      transition: background 0.17s, color 0.17s;
+      margin-left: 0.35em;
+      margin-right: 0.05em;
     }
-    video {
-      width: 100%;
-      max-width: 380px;
-      border-radius: 1em;
-      margin-bottom: .2em;
-      box-shadow: 0 2px 22px #C3073F55, 0 0 0 #0000;
-      background: #22201a;
-      outline: 2px solid var(--secondary);
+    .queued-item.current .play-btn {
+      color: var(--neon-red);
+      text-shadow: 0 0 6px var(--neon-red);
     }
-    @media (max-width: 700px) {
-      .gallery {
+    .queued-item .remove-btn {
+      color: #e84c4c;
+      background: #1c0106;
+    }
+    .queue-controls {
+      margin-bottom: 0.7em;
+      display: flex;
+      gap: 0.8em;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .queue-controls button {
+      font-size: 0.86em;
+      padding: 0.19em 1.1em;
+      font-family: 'UnifrakturCook', 'Cinzel', serif, 'Montserrat', Arial;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      color: var(--neon-red);
+      background: #230616;
+      outline: 1px solid var(--highlight);
+      transition: all 0.13s;
+      font-weight: 700;
+      text-shadow: 0 0 8px var(--highlight), 0 2px 8px #0009;
+    }
+    .queue-controls button:hover {
+      background: var(--primary);
+      color: #fff;
+      outline: 1px solid #fff;
+      text-shadow: 0 0 12px #fff8;
+    }
+    @media (max-width: 1020px) {
+      .content-wrap {
         flex-direction: column;
         align-items: center;
+        gap: 0.8em;
+      }
+      .queue-section {
+        position: static;
+        max-width: 95vw;
+        width: 97vw;
+        margin-top: 1.5em;
+        order: 2;
+      }
+      .gallery {
+        order: 1;
+      }
+    }
+    @media (max-width: 700px) {
+      .content-wrap {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.2em;
+      }
+      .queue-section {
+        margin-top: 1.1em;
+        min-width: unset;
+      }
+      .gallery {
         padding: 1em 0.1em 3em 0.1em;
+        gap: 1.2em;
       }
       .row-gallery {
         flex-direction: column;
         align-items: center;
-        gap: 2em;
-      }
-      .bloodlines-title {
-        font-size: 2em;
+        gap: 1.2em;
       }
       .video-card {
         max-width: 98vw;
@@ -155,36 +309,189 @@
     <div class="bloodlines-title">Bloodlines</div>
     <div class="subtitle">Vampire: The Masquerade Instrumentals by KinSav</div>
   </header>
-  <section class="gallery">
-    <div class="video-card">
-      <div class="video-title">Toreador <span aria-label="rose" title="rose">🥀</span></div>
-      <video controls src="Toreador 🥀.mp4"></video>
-      <button class="loop-btn" onclick="toggleLoop(this)">Loop: Off</button>
-    </div>
-    <div class="row-gallery">
-      <div class="video-card">
-        <div class="video-title">Daughter of Janus</div>
-        <video controls src="Daughter of Janus.mp4"></video>
-        <button class="loop-btn" onclick="toggleLoop(this)">Loop: Off</button>
+  <div class="content-wrap">
+    <section class="gallery">
+      <div class="video-card" data-title="Toreador 🥀" data-src="Toreador 🥀.mp4">
+        <div class="video-title">Toreador <span aria-label="rose" title="rose">🥀</span></div>
+        <video controls preload="metadata" src="Toreador 🥀.mp4"></video>
+        <div class="btn-row">
+          <button class="queue-btn" onclick="addToQueue(this)">Add to Queue</button>
+          <button class="loop-btn" onclick="toggleLoop(this)">Loop: Off</button>
+        </div>
       </div>
-      <div class="video-card">
-        <div class="video-title">Malkavian</div>
-        <video controls src="Malkavian.mp4"></video>
-        <button class="loop-btn" onclick="toggleLoop(this)">Loop: Off</button>
+      <div class="row-gallery">
+        <div class="video-card" data-title="Daughter of Janus" data-src="Daughter of Janus.mp4">
+          <div class="video-title">Daughter of Janus</div>
+          <video controls preload="metadata" src="Daughter of Janus.mp4"></video>
+          <div class="btn-row">
+            <button class="queue-btn" onclick="addToQueue(this)">Add to Queue</button>
+            <button class="loop-btn" onclick="toggleLoop(this)">Loop: Off</button>
+          </div>
+        </div>
+        <div class="video-card" data-title="Malkavian" data-src="Malkavian.mp4">
+          <div class="video-title">Malkavian</div>
+          <video controls preload="metadata" src="Malkavian.mp4"></video>
+          <div class="btn-row">
+            <button class="queue-btn" onclick="addToQueue(this)">Add to Queue</button>
+            <button class="loop-btn" onclick="toggleLoop(this)">Loop: Off</button>
+          </div>
+        </div>
+        <div class="video-card" data-title="Nosferatu" data-src="Nosferatu.mp4">
+          <div class="video-title">Nosferatu</div>
+          <video controls preload="metadata" src="Nosferatu.mp4"></video>
+          <div class="btn-row">
+            <button class="queue-btn" onclick="addToQueue(this)">Add to Queue</button>
+            <button class="loop-btn" onclick="toggleLoop(this)">Loop: Off</button>
+          </div>
+        </div>
       </div>
-      <div class="video-card">
-        <div class="video-title">Nosferatu</div>
-        <video controls src="Nosferatu.mp4"></video>
-        <button class="loop-btn" onclick="toggleLoop(this)">Loop: Off</button>
+    </section>
+    <aside class="queue-section" id="queue-section">
+      <div class="queue-title">Song Queue</div>
+      <div class="queue-controls">
+        <button onclick="playQueue()">Play Queue</button>
+        <button onclick="clearQueue()">Clear Queue</button>
       </div>
-    </div>
-  </section>
+      <ul class="queued-list" id="queued-list">
+        <!-- Queue items inserted here -->
+      </ul>
+      <div id="empty-queue-msg" style="color:#b48bb5;font-family:'Montserrat';font-size:.98em;">Queue is empty.<br>Add some tracks!</div>
+    </aside>
+  </div>
   <footer>
     &copy; 2025 KinSav
   </footer>
   <script>
+    // All songs on the page in order
+    const allSongs = [
+      { title: "Toreador 🥀", src: "Toreador 🥀.mp4" },
+      { title: "Daughter of Janus", src: "Daughter of Janus.mp4" },
+      { title: "Malkavian", src: "Malkavian.mp4" },
+      { title: "Nosferatu", src: "Nosferatu.mp4" }
+    ];
+
+    let queue = [];
+    let currentQueueIndex = -1; // -1 means not playing from queue
+
+    function addToQueue(btn) {
+      const card = btn.closest('.video-card');
+      const title = card.getAttribute('data-title');
+      const src = card.getAttribute('data-src');
+
+      // Prevent duplicates
+      if (queue.findIndex(q => q.src === src) !== -1) return;
+
+      queue.push({ title, src });
+      updateQueueDisplay();
+
+      // Mark as active
+      btn.classList.add('active');
+      btn.textContent = 'Queued!';
+    }
+
+    function removeFromQueue(idx) {
+      const removed = queue.splice(idx, 1)[0];
+      updateQueueDisplay();
+      // Unmark in gallery
+      document.querySelectorAll('.video-card').forEach(card => {
+        if (card.getAttribute('data-src') === removed.src) {
+          let btn = card.querySelector('.queue-btn');
+          btn.classList.remove('active');
+          btn.textContent = 'Add to Queue';
+        }
+      });
+      // If removed song is current, stop queueing or move to next
+      if (currentQueueIndex === idx) {
+        stopQueue();
+      } else if (currentQueueIndex > idx) {
+        currentQueueIndex--; // Shift index left
+      }
+    }
+
+    function clearQueue() {
+      queue = [];
+      currentQueueIndex = -1;
+      updateQueueDisplay();
+      // Unmark all
+      document.querySelectorAll('.queue-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.textContent = 'Add to Queue';
+      });
+      stopQueue();
+    }
+
+    function updateQueueDisplay() {
+      const list = document.getElementById('queued-list');
+      list.innerHTML = '';
+      queue.forEach((song, i) => {
+        const li = document.createElement('li');
+        li.className = 'queued-item' + (i === currentQueueIndex ? ' current' : '');
+        li.innerHTML = `
+          <span>${song.title}</span>
+          <span>
+            <button class="play-btn" onclick="playFromQueue(${i})" title="Play">&#9654;</button>
+            <button class="remove-btn" onclick="removeFromQueue(${i})" title="Remove">&#10005;</button>
+          </span>
+        `;
+        list.appendChild(li);
+      });
+      document.getElementById('empty-queue-msg').style.display = queue.length === 0 ? 'block' : 'none';
+    }
+
+    function playFromQueue(idx) {
+      if (queue.length === 0) return;
+      currentQueueIndex = idx;
+      updateQueueDisplay();
+
+      // Find in gallery and play
+      const song = queue[idx];
+      let videoCard = Array.from(document.querySelectorAll('.video-card')).find(
+        c => c.getAttribute('data-src') === song.src
+      );
+      if (videoCard) {
+        let video = videoCard.querySelector('video');
+        // Pause all video tags on the page first
+        document.querySelectorAll('video').forEach(v => {
+          v.pause();
+          v.currentTime = 0;
+        });
+        video.play();
+        // Scroll into view smoothly
+        videoCard.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+
+    function playQueue() {
+      if (queue.length === 0) return;
+      playFromQueue(0);
+    }
+
+    // Whenever a video ends and is part of queue, go to next
+    document.querySelectorAll('.video-card video').forEach((vid) => {
+      vid.addEventListener('ended', function() {
+        if(currentQueueIndex !== -1 && !vid.loop) {
+          if (currentQueueIndex < queue.length - 1) {
+            playFromQueue(currentQueueIndex + 1);
+          } else {
+            // End of queue
+            currentQueueIndex = -1;
+            updateQueueDisplay();
+          }
+        }
+      });
+    });
+
+    function stopQueue() {
+      currentQueueIndex = -1;
+      updateQueueDisplay();
+    }
+
+    // Maintain scroll/queue state on resize
+    window.addEventListener("resize", updateQueueDisplay);
+
+    // LOOP BUTTONS as before
     function toggleLoop(btn) {
-      const video = btn.parentElement.querySelector("video");
+      const video = btn.parentElement.parentElement.querySelector("video");
       video.loop = !video.loop;
       if(video.loop) {
         btn.classList.add("active");
@@ -194,6 +501,22 @@
         btn.textContent = "Loop: Off";
       }
     }
+
+    // When user plays video manually, clear from queue state if not current in queue
+    document.querySelectorAll('.video-card video').forEach((vid) => {
+      vid.addEventListener('play', function() {
+        const src = vid.currentSrc.split('/').pop();
+        if(currentQueueIndex !== -1) {
+          const cur = queue[currentQueueIndex];
+          if(!vid.loop && (!cur || cur.src !== src)) {
+            stopQueue();
+          }
+        }
+      });
+    });
+
+    // Page initial state
+    updateQueueDisplay();
   </script>
 </body>
 </html>
